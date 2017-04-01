@@ -5,7 +5,7 @@
       max-height: 30px;
     }
   }
-  @media (max-width: 370px) { 
+  @media (max-width: 370px) {
     img {
       max-height: 25px;
     }
@@ -46,7 +46,7 @@
           font-size: 0.45rem;
         }
         img {
-          max-height: 20px;
+          max-height: 30px;
           vertical-align: top;
         }
     }
@@ -223,7 +223,7 @@
             font-size: 1.5rem;
             &:hover {
               color: rgba($body-color, 0.6);
-              
+
             }
           }
         }

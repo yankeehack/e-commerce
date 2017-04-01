@@ -1,0 +1,29 @@
+gcloud container clusters list
+gcloud container clusters describe NAME
+gcloud container clusters get-credentials cluster-1-anadog --zone us-central1-a
+
+kubectl config use-context gke_anadog-161321_us-central1-a_cluster-1-anadog
+
+docker tag 5b18f571de48 gcr.io/anadog-161321/django:v4
+gcloud docker -- push gcr.io/anadog-161321/django
+
+kubectl apply -f kubernetes/prod/django_deployment.yaml
+
+kubectl exec -it pod -- /bin/bash
+kubectl exec <Redis POD NAME> -- df -h | grep redis
+
+kubectl describe pod xxx
+
+
+redis-cli -h HOST -p PORT -n DATABASE_NUMBER llen QUEUE_NAME
+#celery's default queue is named as celery not default
+redis-cli -h HOST -p PORT -n DATABASE_NUMBER keys \*
+###notes####
+pods unit that handle containers, pod could have multiple containers inside
+deployment handles create/delete/maintaining pods
+services handle's service discovery and loadballance
+
+sometimes, minikube will get connection refused error, due to that after minikube start, it needs time to pull google api and
+docker images, those requires time
+
+

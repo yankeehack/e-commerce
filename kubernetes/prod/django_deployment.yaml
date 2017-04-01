@@ -1,0 +1,53 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: django
+  labels:
+    app: django
+spec:
+  ports:
+    # the port that this service should serve on
+  - port: 80
+    targetPort: 8000
+  selector:
+    app: django
+  type: LoadBalancer
+
+
+---
+
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: django
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: django
+    spec:
+      containers:
+      - name: django
+        image: gcr.io/anadog-161321/django:v4
+        command: ["/bin/sh"]
+        args: ["-c", "python manage.py collectstatic --noinput && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"]
+        env:
+        - name: ALLOWED_HOSTS
+          value: "*"
+        - name: DEMO_GREETING
+          value: "Hello from the environment"
+        - name: DATABASE_URL
+          value: "postgres://saleor:saleor@10.95.241.255:5432/saleor"
+        - name: DEFAULT_FROM_EMAIL
+          value: "noreply@example.com"
+        - name: ELASTICSEARCH_URL
+          value: "http://search:9200/"
+        - name: OPENEXCHANGERATES_API_KEY
+          value: ""
+        - name: REDIS_URL
+          value: "redis://redis:6379/0"
+        - name: SECRET_KEY
+          value: "changeme"
+        ports:
+          - containerPort: 8000

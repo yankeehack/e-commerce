@@ -2,11 +2,11 @@
 
 {% block content %}{% blocktrans context "Email confirmation message" %}Hi!
 
-You have requested login access to saleor project. To continue visit the link below.
+You have requested login access to Chef's Garage project. To continue visit the link below.
 
 {{ activate_url }}
 
-If you didn't try to login to saleor please ignore this message. We apologise for inconvenience.
+If you didn't try to login to Chef's Garage please ignore this message. We apologise for inconvenience.
 
 Sincerely,
-Saleor Team{% endblocktrans %}{% endblock %}
+Chef's Garage Team{% endblocktrans %}{% endblock %}

@@ -7,6 +7,7 @@ import dj_database_url
 import dj_email_url
 from django.contrib.messages import constants as messages
 import django_cache_url
+from kombu import Exchange, Queue
 
 
 DEBUG = ast.literal_eval(os.environ.get('DEBUG', 'True'))
@@ -98,6 +99,14 @@ context_processors = [
     'saleor.core.context_processors.webpage_schema',
 ]
 
+AUTHENTICATION_BACKENDS = (
+    # Needed to login by username in Django admin, regardless of `allauth`, this is the default value
+    'django.contrib.auth.backends.ModelBackend',
+
+    # `allauth` specific authentication methods, such as login by e-mail, not needed here since we are using allauth's url directly, but kept here as reference
+    'allauth.account.auth_backends.AuthenticationBackend'
+)
+
 loaders = [
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
@@ -161,6 +170,7 @@ INSTALLED_APPS = [
     'saleor.search',
     'saleor.site',
     'saleor.data_feeds',
+    # 'saleor.celery',
 
     # External apps
     'versatileimagefield',
@@ -226,7 +236,7 @@ LOGGING = {
         }
     }
 }
-
+# Used by all-AUTH app https://django-allauth.readthedocs.io/en/latest/overview.html
 AUTH_USER_MODEL = 'userprofile.User'
 
 LOGIN_URL = '/account/login/'
@@ -325,7 +335,7 @@ WEBPACK_LOADER = {
             r'.+\.hot-update\.js',
             r'.+\.map']}}
 
-
+# used by allauth
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
@@ -374,3 +384,58 @@ GRAPHENE = {
 }
 
 SITE_SETTINGS_ID = 1
+
+# Celery config
+CELERY_BROKER_URL=os.environ.get('CELERY_BROKER_URL')
+CELERY_RESULT_BACKEND=os.environ.get('CELERY_RESULT_BACKEND')
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_DEFAULT_QUEUE = 'default'
+CELERY_QUEUES = (
+    Queue('default', Exchange('default'), routing_key='default'),
+)
+
+# Names of nodes to start
+#   most people will only start one node:
+CELERYD_NODES="worker1"
+#   but you can also start multiple and configure settings
+#   for each in CELERYD_OPTS
+#CELERYD_NODES="worker1 worker2 worker3"
+#   alternatively, you can specify the number of nodes to start:
+#CELERYD_NODES=10
+
+# Absolute or relative path to the 'celery' command:
+# CELERY_BIN="/usr/local/bin/celery"
+#CELERY_BIN="celery"
+
+# App instance to use
+# comment out this line if you don't use an app
+CELERY_APP="saleor"
+# or fully qualified:
+#CELERY_APP="proj.tasks:app"
+
+# Where to chdir at start.
+CELERYD_CHDIR="/opt/saleor/"
+
+# Extra command-line arguments to the worker
+CELERYD_OPTS="--time-limit=300 --concurrency=8"
+# Configure node-specific settings by appending node name to arguments:
+#CELERYD_OPTS="--time-limit=300 -c 8 -c:worker2 4 -c:worker3 2 -Ofair:worker1"
+
+# Set logging level to DEBUG
+#CELERYD_LOG_LEVEL="DEBUG"
+
+# %n will be replaced with the first part of the nodename.
+CELERYD_LOG_FILE="/var/log/celery/%n%I.log"
+CELERYD_PID_FILE="/var/run/celery/%n.pid"
+
+# Workers should run as an unprivileged user.
+#   You need to create this user manually (or you can choose
+#   a user/group combination that already exists (e.g., nobody).
+CELERYD_USER="celery"
+CELERYD_GROUP="celery"
+
+# If enabled pid and log directories will be created if missing,
+# and owned by the userid/group configured.
+CELERY_CREATE_DIRS=1

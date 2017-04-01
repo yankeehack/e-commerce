@@ -1,0 +1,38 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: saleor-celery
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: saleor-celery
+    spec:
+      containers:
+      - name: saleor-celery
+        image: django:v4
+#Dev only hot reload from image
+        volumeMounts:
+        - name: reload
+          mountPath: /app
+#Dev only hot reload from image
+        command:
+        - ./kubernetes/run_celery.sh
+        env:
+        - name: GET_HOSTS_FROM
+          value: env
+        - name: CELERY_BROKER_URL
+          value: "redis://redis:6379/1"
+        - name: CELERY_RESULT_BACKEND
+          value: "redis://redis:6379/2"
+        - name: SECRET_KEY
+          value: "changeme"
+        ports:
+          - containerPort: 8000
+#Dev only hot reload from image
+      volumes:
+      - name: reload
+        hostPath:
+          path: /Users/yazhu/myProject/workspace/saleor
+#Dev only hot reload from image

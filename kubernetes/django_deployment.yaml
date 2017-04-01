@@ -1,0 +1,70 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: django
+  labels:
+    app: django
+spec:
+  ports:
+    # the port that this service should serve on
+  - port: 80
+    targetPort: 8000
+  selector:
+    app: django
+  type: LoadBalancer
+
+---
+
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: saleor
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: django
+    spec:
+      containers:
+      - name: django
+        image: django:v4
+#Dev only hot reload from image
+        volumeMounts:
+        - name: reload
+          mountPath: /app
+#Dev only hot reload from image
+        command:
+        - ./kubernetes/run_django.sh
+        env:
+        - name: GET_HOSTS_FROM
+          value: env
+        - name: ALLOWED_HOSTS
+          value: "*"
+        - name: DEMO_GREETING
+          value: "Hello from the environment"
+        - name: DATABASE_URL
+          value: "postgres://saleor:saleor@10.0.0.182:5432/saleor"
+        - name: CELERY_BROKER_URL
+          value: "redis://redis:6379/1"
+        - name: CELERY_RESULT_BACKEND
+          value: "redis://redis:6379/2"
+        - name: DEFAULT_FROM_EMAIL
+          value: "noreply@example.com"
+        - name: ELASTICSEARCH_URL
+          value: "http://search:9200/"
+        - name: OPENEXCHANGERATES_API_KEY
+          value: ""
+        - name: REDIS_URL
+          value: "redis://redis:6379/0"
+        - name: SECRET_KEY
+          value: "changeme"
+        ports:
+          - containerPort: 8000
+#Dev only hot reload from image
+      volumes:
+      - name: reload
+        hostPath:
+          path: /Users/yazhu/myProject/workspace/saleor
+#Dev only hot reload from image
+

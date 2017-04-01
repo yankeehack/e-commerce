@@ -7,11 +7,14 @@
   }
   &__logo {
     margin-bottom: $global-margin;
+    opacity: 0.7;
+    height: 150px;
+    width: 150px;
     @include media-breakpoint-down(md) {
-      height: 30px;
+      height: 40px;
     }
     @include media-breakpoint-down(sm) {
-      height: 40px;
+      height: 50px;
     }
   }
   ul {
@@ -30,6 +33,14 @@
     }
     &.github-footer {
       margin-right: $global-margin;
+    }
+    &.linkedin-footer {
+      margin-top: $global-margin;
+      display:block;
+      height: 45px;
+      width: 45px;
+      background: url(/static/images/LinkedIn_logo_initials.png);
+      background-size: cover;
     }
   }
 }

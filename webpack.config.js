@@ -3,6 +3,7 @@ var BundleTracker = require('webpack-bundle-tracker');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var path = require('path');
 var webpack = require('webpack');
+var WebpackCleanupPlugin = require('webpack-cleanup-plugin');
 
 var resolve = path.resolve.bind(path, __dirname);
 
@@ -17,6 +18,7 @@ var commonsChunkPlugin = new webpack.optimize.CommonsChunkPlugin({
 var occurenceOrderPlugin = new webpack.optimize.OccurenceOrderPlugin();
 
 var extractTextPlugin = new ExtractTextPlugin('[name].[contenthash].css');
+var webpackCleanupPlugin = new WebpackCleanupPlugin();
 
 var environmentPlugin = new webpack.DefinePlugin({
   'process.env': {
@@ -88,7 +90,8 @@ var config = {
     environmentPlugin,
     extractTextPlugin,
     occurenceOrderPlugin,
-    providePlugin
+    providePlugin,
+    webpackCleanupPlugin
   ],
   postcss: function() {
     return [autoprefixer];

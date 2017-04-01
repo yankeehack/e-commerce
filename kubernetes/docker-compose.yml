@@ -17,7 +17,7 @@ services:
       - '127.0.0.1:9200:9200'
   web:
     build: .
-    command: python manage.py runserver 0.0.0.0:8000
+    command: bash -c "python manage.py collectstatic --noinput && python manage.py migrate && python manage.py populatedb --createsuperuser && python manage.py runserver 0.0.0.0:8000"
     environment:
       - DATABASE_URL=postgres://saleor:saleor@db/saleor
       - DEFAULT_FROM_EMAIL=noreply@example.com
