@@ -23,7 +23,5 @@ pods unit that handle containers, pod could have multiple containers inside
 deployment handles create/delete/maintaining pods
 services handle's service discovery and loadballance
 
-sometimes, minikube will get connection refused error, due to that after minikube start, it needs time to pull google api and
-docker images, those requires time
 
 
