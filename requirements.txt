@@ -82,7 +82,7 @@ stripe==1.46.0            # via django-payments
 suds-jurko==0.6           # via django-payments
 text-unidecode==1.0
 typing==3.5.2.2           # via promise
-urllib3==1.19.1           # via elasticsearch
+urllib3==1.26.5           # via elasticsearch
 uwsgi==2.0.14
 xmltodict==0.10.2         # via django-payments
 celery[redis]==4.0.2
